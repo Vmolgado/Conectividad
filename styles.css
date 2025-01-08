@@ -1,0 +1,105 @@
+/* Estilo para el header */
+header {
+    position: relative;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-image: url('fondo.jpg');  
+    background-size: cover;  
+    background-position: center;  
+    border-bottom: 2px solid #ccc;
+    height: 150px;  
+    color: white;  
+}
+
+/* Ocultar el título (ningún texto se muestra) */
+header h1 {
+    display: none;
+}
+
+/* Estilo de la fecha */
+header .date {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.2rem;
+    color: black;  
+}
+
+/* ===============================
+   Botón verde: "Cargar Base"
+   =============================== */
+#uploadForm button.cargarBase {
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+#uploadForm button.cargarBase:hover {
+    opacity: 0.9;
+}
+
+/* Estilo específico para el botón Analizar (azul) */
+#uploadForm button.analizar {
+    background-color: #007BFF; /* Azul */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Estilo para el icono del bote de basura (Limpiar todo) */
+#uploadForm button.limpiar {
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    color: #ff0000; /* Rojo para el bote de basura */
+}
+
+/* Hover effect para el botón Analizar */
+#uploadForm button.analizar:hover {
+    opacity: 0.9;
+}
+
+/* Hover effect para el icono de Limpiar */
+#uploadForm button.limpiar:hover {
+    opacity: 0.8;
+}
+
+/* Estilo de la tabla con cuadriculado marcado */
+#resultsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Estilo para las celdas y bordes */
+#resultsTable th, #resultsTable td {
+    border: 2px solid #333; /* Bordes más gruesos para un cuadriculado más visible */
+    padding: 8px;
+    text-align: center;
+}
+
+/* Estilo para los encabezados */
+#resultsTable th {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50; /* Color de borde verde */
+}
+
+/* Intercalar filas de la tabla */
+#resultsTable tbody tr:nth-child(odd) {
+    background-color: #fff; /* Fila en blanco */
+}
+#resultsTable tbody tr:nth-child(even) {
+    background-color: #f4f4f4; /* Fila con un color claro */
+}
