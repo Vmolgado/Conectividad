@@ -201,39 +201,17 @@ function fusionarArchivos() {
             newUnit["Estatus Unidad"] = "Pendiente";
           }
           mergedData.push(newUnit);
-        } 
-        else {
+        } else {
           // Sí existe => RESPETAMOS los campos trabajados
           const existingUnit = mergedData[existingIndex];
 
-          // -- Si la unidad NO está en Pendiente (Ej: "Trabajada"), 
-          //    AÚN ASÍ podemos decidir si actualizamos "Días Sin Comunicación" 
-          //    o "Hora de último mensaje". Pero queremos mantener:
-          //    "No. Ticket", "Fecha de Seguimiento", "Contacto", "Teléfono Contacto", 
-          //    "Comentarios" y su "Estatus Unidad" actual.
-
-          // OPCIÓN A: Si NO está en Pendiente, solo actualizamos "Días Sin Comunicación" 
-          //          y "Hora de último mensaje", sin tocar lo demás.
-          // OPCIÓN B: Si NO está en Pendiente, no lo actualizamos en absoluto.
-          
-          // Supongamos que SÍ queremos actualizar "Días Sin Comunicación" y "Hora..." 
-          // para saber cuántos días realmente lleva sin comunicar, pero respetar
-          // "No. Ticket", "Fecha de Seguimiento", "Estatus Unidad", etc.
-
-          // Actualizamos "Días Sin Comunicación" siempre
+          // Actualizamos "Días Sin Comunicación" y "Hora de último mensaje"
           existingUnit["Días Sin Comunicación"] = diffDays;
           existingUnit["Hora de último mensaje"] = newUnit["Hora de último mensaje"];
 
-          // Mantenemos "Estatus Unidad" tal como está (si es "Trabajada" o algo más).
-          // Mantenemos "No. Ticket", "Fecha de Seguimiento", "Contacto", etc. 
-          // tal como ya existía en existingUnit, SIN sobreescribirlo con newUnit.
-
-          // Si prefieres que, si está en Pendiente, se actualicen también Teléfono, 
-          // Tipo Dispositivo, etc., podrías hacerlo con:
+          // Se mantienen los demás campos (No. Ticket, Fecha de Seguimiento, etc.)
           if (existingUnit["Estatus Unidad"] === "Pendiente") {
-            // Por ejemplo:
-            // existingUnit["Teléfono"] = newUnit["Teléfono"];
-            // existingUnit["Tipo de dispositivo"] = newUnit["Tipo de dispositivo"];
+            // Aquí se podría actualizar otros campos si se desea
           }
         }
       }
@@ -409,4 +387,110 @@ function clearAll() {
   // Mostrar alerta y luego refrescar la página
   alert('Datos limpiados. Listo para cargar nuevos archivos.');
   window.location.reload();
+}
+
+/************************************************************
+ * 12) REPORTE: CARGAR ARCHIVO Y GENERAR GRÁFICA
+ ************************************************************/
+function cargarReporte() {
+  const fileInput = document.getElementById('fileReporte').files[0];
+  if (!fileInput) {
+    alert('Por favor selecciona un Archivo de Reporte (.xlsx).');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = e.target.result;
+    const workbook = XLSX.read(data, { type: 'binary' });
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+    
+    // Se parsean los datos (se reutiliza la función parseExcelData)
+    const reporteData = parseExcelData(jsonData);
+
+    // Se agrupa por "Estatus Unidad"
+    const statusCount = {};
+    reporteData.forEach(item => {
+      const status = item["Estatus Unidad"] || "Sin definir";
+      statusCount[status] = (statusCount[status] || 0) + 1;
+    });
+
+    // Se preparan los arrays para la gráfica
+    const labels = Object.keys(statusCount);
+    const counts = labels.map(label => statusCount[label]);
+
+    // Se generan colores diferentes para cada barra
+    const colors = generarColores(labels.length);
+
+    generarGraficaReporte(labels, counts, colors);
+    alert("Reporte cargado y gráfico generado.");
+  };
+  reader.readAsBinaryString(fileInput);
+}
+
+// Función que genera un array de colores aleatorios (o predefinidos) de tamaño n
+function generarColores(n) {
+  const colores = [];
+  for (let i = 0; i < n; i++) {
+    // Genera un color en formato rgba
+    const r = Math.floor(Math.random() * 156) + 100; // 100-255 para tonos más claros
+    const g = Math.floor(Math.random() * 156) + 100;
+    const b = Math.floor(Math.random() * 156) + 100;
+    colores.push(`rgba(${r}, ${g}, ${b}, 0.7)`);
+  }
+  return colores;
+}
+
+function generarGraficaReporte(labels, counts, colors) {
+  // Si ya existe un gráfico, lo destruye para evitar duplicados
+  if (window.reportChartInstance) {
+    window.reportChartInstance.destroy();
+  }
+  const ctx = document.getElementById('reporteChart').getContext('2d');
+  window.reportChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Cantidad por Estatus Unidad',
+        data: counts,
+        backgroundColor: colors,
+        borderColor: colors.map(color => color.replace('0.7', '1')), // mismo color, opacidad 1 para borde
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        // Configuración del plugin DataLabels para mostrar números sobre cada barra
+        datalabels: {
+          anchor: 'end',
+          align: 'end',
+          color: 'black',
+          font: {
+            weight: 'bold'
+          },
+          formatter: Math.round
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]  // Registro del plugin de DataLabels
+  });
+}
+
+/************************************************************
+ * 13) BUSCADOR
+ ************************************************************/
+function filtrarTabla() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const filteredData = mergedData.filter(item => item.Nombre.toLowerCase().includes(searchTerm));
+  mostrarTabla(filteredData);
 }
