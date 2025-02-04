@@ -1,90 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>PORTAL CONECTIVIDAD TTC</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <title>PORTAL CONECTIVIDAD TTC</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <!-- (Opcional) Tus estilos CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <!-- Tus estilos CSS -->
+  <link rel="stylesheet" href="styles.css">
 
-    <!-- FontAwesome (para íconos) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- FontAwesome para íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-    <!-- Encabezado con fecha actual -->
-    <header>
-        <div class="date" id="currentDate"></div>
-    </header>
+  <!-- Encabezado con fecha actual -->
+  <header>
+    <div class="date" id="currentDate"></div>
+  </header>
 
-    <!-- Formulario con dos inputs: Archivo Base y Archivo Nuevo -->
-    <form id="uploadForm">
-        <!-- 1) Cargar Base (con la info ya trabajada) -->
-        <div style="margin-bottom: 10px;">
-            <label for="fileBase">Archivo Base:</label>
-            <input type="file" id="fileBase" accept=".xlsx">
-            <button type="button" onclick="cargarArchivoBase()">Cargar Base</button>
-        </div>
-
-        <!-- 2) Analizar Nuevo (> 7 días y fusionar con Base) -->
-        <div style="margin-bottom: 10px;">
-            <label for="fileNuevo">Archivo Nuevo:</label>
-            <input type="file" id="fileNuevo" accept=".xlsx">
-            <button type="button" onclick="analizarArchivoNuevo()">Analizar Nuevo</button>
-        </div>
-
-        <!-- Botón para limpiar todo -->
-        <button type="button" class="limpiar" onclick="clearAll()" style="border: none; background: none; cursor: pointer;">
-            <i class="fas fa-trash fa-2x" style="color: #444;"></i>
-        </button>
-    </form>
-
-    <!-- Sección para mostrar el total de unidades sin comunicar -->
-    <h4 id="unidadesSinComunicar" style="display: none;"></h4>
-
-    <!-- Botones de exportar y enviar (inicialmente ocultos) -->
-    <div id="iconButtons" style="text-align: center; margin-top: 20px; display: none;">
-        <button type="button" onclick="exportToExcel()" title="Exportar a Excel" style="border: none; background: none;">
-            <i class="fas fa-file-excel fa-2x" style="color: green;"></i>
-        </button>
-
-        <button type="button" onclick="exportToPDF()" title="Exportar a PDF" style="border: none; background: none;">
-            <i class="fas fa-file-pdf fa-2x" style="color: red;"></i>
-        </button>
-
-        <button type="button" onclick="sendByEmail()" title="Enviar por correo" style="border: none; background: none;">
-            <i class="fas fa-envelope fa-2x" style="color: #007BFF;"></i>
-        </button>
+  <!-- Formulario para cargar archivos -->
+  <form id="uploadForm">
+    <!-- Cargar Archivo Base -->
+    <div style="margin-bottom: 10px;">
+      <label for="fileBase">Archivo Base:</label>
+      <input type="file" id="fileBase" accept=".xlsx">
+      <button type="button" class="cargarBase" onclick="cargarArchivoBase()">Cargar Base</button>
     </div>
 
-    <!-- Tabla de resultados -->
-    <table id="resultsTable">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>SD</th>
-                <th>Tipo de dispositivo</th>
-                <th>UID</th>
-                <th>Teléfono</th>
-                <th>Hora de último mensaje</th>
-                <th>Creada</th>
-                <th>Grupos</th>
-                <th>Campos personalizados</th>
-                <th>Días Sin Comunicación</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Se llenará dinámicamente -->
-        </tbody>
-    </table>
+    <!-- Cargar Archivo Nuevo -->
+    <div style="margin-bottom: 10px;">
+      <label for="fileNuevo">Archivo Nuevo:</label>
+      <input type="file" id="fileNuevo" accept=".xlsx">
+      <button type="button" class="analizar" onclick="analizarArchivoNuevo()">Analizar Nuevo</button>
+    </div>
 
-    <!-- Librerías necesarias (xlsx y jsPDF + autotable) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+    <!-- Botón para limpiar todo -->
+    <button type="button" class="limpiar" onclick="clearAll()" style="border: none; background: none; cursor: pointer;">
+      <i class="fas fa-trash fa-2x"></i>
+    </button>
+  </form>
 
-    <!-- Archivo JS con toda la lógica -->
-    <script src="script.js"></script>
+  <!-- Sección para mostrar el resumen de unidades sin comunicar -->
+  <h4 id="unidadesSinComunicar" style="display: none;"></h4>
+
+  <!-- Botones de exportar y enviar (inicialmente ocultos) -->
+  <div id="iconButtons" style="text-align: center; margin-top: 20px; display: none;">
+    <button type="button" onclick="exportToExcel()" title="Exportar a Excel" style="border: none; background: none;">
+      <i class="fas fa-file-excel fa-2x" style="color: green;"></i>
+    </button>
+    <button type="button" onclick="exportToPDF()" title="Exportar a PDF" style="border: none; background: none;">
+      <i class="fas fa-file-pdf fa-2x" style="color: red;"></i>
+    </button>
+    <button type="button" onclick="sendByEmail()" title="Enviar por correo" style="border: none; background: none;">
+      <i class="fas fa-envelope fa-2x" style="color: #007BFF;"></i>
+    </button>
+  </div>
+
+  <!-- Campo de búsqueda para filtrar por Nombre -->
+  <div id="searchContainer" style="text-align: center; margin-top: 20px;">
+    <input type="text" id="searchInput" placeholder="Buscar por nombre..." onkeyup="filtrarTabla()">
+  </div>
+
+  <!-- Tabla de resultados -->
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>SD</th>
+        <th>Tipo de dispositivo</th>
+        <th>UID</th>
+        <th>Teléfono</th>
+        <th>Hora de último mensaje</th>
+        <th>Creada</th>
+        <th>Grupos</th>
+        <th>Campos personalizados</th>
+        <th>Días Sin Comunicación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Se llenará dinámicamente -->
+    </tbody>
+  </table>
+
+  <!-- Sección para Reporte (cargar archivo para gráfica) -->
+  <section id="reporteSection" style="text-align: center; margin-top: 40px;">
+    <h3>Reporte Gráfico: Estatus Unidad</h3>
+    <div style="margin-bottom: 10px;">
+      <label for="fileReporte">Archivo Reporte:</label>
+      <input type="file" id="fileReporte" accept=".xlsx">
+      <button type="button" onclick="cargarReporte()">Reporte</button>
+    </div>
+    <!-- Contenedor para la gráfica -->
+    <canvas id="reporteChart" width="400" height="200" style="max-width: 90%;"></canvas>
+  </section>
+
+  <!-- Librerías necesarias -->
+  <!-- XLSX para leer Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- jsPDF y autotable para exportar a PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+  <!-- Chart.js para la gráfica -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js DataLabels Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <!-- Archivo JS con la lógica -->
+  <script src="script.js"></script>
 </body>
 </html>
