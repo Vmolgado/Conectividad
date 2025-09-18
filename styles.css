@@ -1,121 +1,224 @@
-/* Estilo para el header */
-header {
-  position: relative;  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-image: url('fondo.jpg');  
-  background-size: cover;  
-  background-position: center;  
-  border-bottom: 2px solid #ccc;
-  height: 150px;  
-  color: white;  
+/* ====== Reset suave y variables ====== */
+:root{
+  --bg: #0f1220;
+  --panel: #14182b;
+  --panel-2: #0f1424;
+  --text: #e8eaf2;
+  --muted: #9aa3b2;
+  --brand: #4F8DF7;   /* azul */
+  --brand-2:#2ED3B7;  /* aqua de acento */
+  --danger:#EF4444;
+  --success:#16A34A;
+  --warning:#F59E0B;
+  --border: rgba(255,255,255,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius: 14px;
+  --radius-sm: 10px;
 }
 
-header h1 {
-  display: none;
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin:0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, #0b0e1a 0%, #0f1220 100%);
+  color: var(--text);
 }
 
-header .date {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 1.2rem;
-  color: white;  
+/* ====== Utilidades ====== */
+.container{
+  width: min(1200px, 92%);
+  margin-inline: auto;
 }
 
-/* Botón verde: "Cargar Base" */
-#uploadForm button.cargarBase {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
+.icon-btn{
+  border:1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
   cursor: pointer;
-  border-radius: 5px;
-  margin-right: 10px;
+  transition: transform .08s ease, background .2s ease, border-color .2s ease;
 }
-#uploadForm button.cargarBase:hover {
-  opacity: 0.9;
+.icon-btn:hover{ transform: translateY(-1px); background: #141a2d; }
+.icon-btn i{ font-size: 1.1rem; }
+.icon-btn.danger{ color: #fff; background: var(--danger); border-color: transparent; }
+.icon-btn.danger:hover{ filter: brightness(1.05); }
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition: transform .08s ease, filter .2s ease;
+}
+.btn:hover{ transform: translateY(-1px); }
+
+.btn.cargarBase{
+  background: linear-gradient(135deg, var(--success), #1db955);
+  color:#fff;
+}
+.btn.analizar{
+  background: linear-gradient(135deg, var(--brand), #6aa8ff);
+  color:#fff;
 }
 
-/* Botón azul: "Analizar" */
-#uploadForm button.analizar {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-right: 10px;
+/* ====== Hero / Header ====== */
+.hero{
+  position: relative;
+  height: 168px;
+  background: url('fondo.jpg') center/cover no-repeat, radial-gradient(1000px 300px at 20% -10%, #203058, transparent 60%);
+  border-bottom: 1px solid var(--border);
 }
-#uploadForm button.analizar:hover {
-  opacity: 0.9;
+.hero__overlay{
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.55) 100%);
 }
-
-/* Botón limpiar */
-#uploadForm button.limpiar {
-  background: none;
-  border: none;
-  font-size: 12px;
-  cursor: pointer;
-  color: #ff0000;
+.hero__content{
+  position:relative; z-index:2;
+  height:100%;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding-bottom: 18px;
 }
-#uploadForm button.limpiar:hover {
-  opacity: 0.8;
+.brand{
+  display:flex; align-items:center; gap:.7rem;
+  font-weight:700; letter-spacing:.2px;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  padding:10px 14px;
+  background: rgba(20,24,43,.7);
+  border:1px solid var(--border);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow);
 }
-
-/* Estilo de la tabla */
-#resultsTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-#resultsTable th, #resultsTable td {
-  border: 2px solid #333;
-  padding: 8px;
-  text-align: center;
-}
-#resultsTable th {
-  background-color: #56070c;
-  color: white;
-  border-color: #4CAF50;
-}
-#resultsTable tbody tr:nth-child(odd) {
-  background-color: #fff;
-}
-#resultsTable tbody tr:nth-child(even) {
-  background-color: #f4f4f4;
+.brand i{ color: var(--brand-2); }
+.hero .date{
+  font-size: .95rem;
+  color: #fff;
+  padding:10px 14px;
+  background: rgba(20,24,43,.7);
+  border:1px solid var(--border);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
 }
 
-/* Estilos para el buscador */
-#searchContainer {
-  margin-top: 20px;
-  text-align: center;
+/* ====== Tarjetas ====== */
+.card{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin: 22px 0;
 }
-#searchInput {
-  width: 250px;
+.card__header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; margin-bottom: 14px;
+}
+.card__header h2{
+  margin:0; font-size:1.05rem; font-weight:700; letter-spacing:.2px;
+  display:flex; align-items:center; gap:.6rem;
+}
+.card__header h2 i{ color: var(--brand-2); }
+
+/* ====== Formulario ====== */
+.form-grid{ display:grid; gap: 18px; }
+.form-row{ display:grid; gap:8px; }
+.form-label{ font-weight:600; color:#d8dbea; }
+.input-actions{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+}
+.input-file{
+  appearance:none;
+  background:#0e1426;
+  border:1px solid var(--border);
+  color: var(--text);
+  padding:10px 12px;
+  border-radius: 12px;
+  min-width: 260px;
+}
+.hint{ margin:0; color: var(--muted); font-size: .88rem; }
+
+/* ====== Badges y acciones ====== */
+.summary{ margin-top: 6px; }
+.badge{
+  display:inline-flex; align-items:center; gap:.5rem;
   padding: 8px 12px;
-  font-size: 1rem;
-  border: 2px solid #333;
-  border-radius: 5px;
-  outline: none;
-  transition: border-color 0.3s ease;
+  border-radius: 999px;
+  font-weight:600; line-height:1;
+  border:1px solid var(--border);
+  background: #0e1426;
 }
-#searchInput:focus {
-  border-color: #007BFF;
+.badge-info{ color:#7dd3fc; border-color: rgba(125,211,252,.25); }
+.actions{
+  display:flex; gap:12px; justify-content:flex-end; margin-top: 14px;
 }
 
-/* Estilos para la sección de reporte y gráfica */
-#reporteSection {
-  margin-top: 40px;
-  text-align: center;
+/* ====== Tabla ====== */
+.table-wrapper{
+  width:100%;
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: #0e1426;
 }
-#reporteSection h3 {
-  margin-bottom: 20px;
+.table{
+  width:100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 920px;
 }
-#reporteSection input[type="file"] {
-  margin-right: 10px;
+.table thead th{
+  position: sticky; top:0; z-index:1;
+  background: linear-gradient(180deg, #1b2240, #161d36);
+  color:#e8ecff;
+  text-align:left;
+  font-weight:700;
+  padding: 12px 14px;
+  border-bottom:1px solid var(--border);
+  white-space: nowrap;
+}
+.table tbody td{
+  padding: 12px 14px;
+  border-bottom:1px solid var(--border);
+  color:#d8dbea;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.table tbody tr:nth-child(odd){ background: rgba(255,255,255,.01); }
+.table tbody tr:hover{ background: rgba(79,141,247,.08); }
+
+/* Alinear numéricos/fechas si quisieras (opcional) */
+/* .table td:nth-child(10), .table th:nth-child(10) { text-align:center; } */
+
+/* ====== Footer ====== */
+.footer{
+  border-top:1px solid var(--border);
+  margin-top: 28px;
+  background: #0b0f1f;
+}
+.footer__content{
+  padding: 14px 0;
+  display:flex; justify-content:space-between; align-items:center;
+  color: var(--muted);
+  font-size:.92rem;
+}
+.footer__right{ display:flex; align-items:center; gap:.5rem; }
+.dot{
+  display:inline-block; width:10px; height:10px; border-radius:50%;
+  background: var(--brand-2); box-shadow: 0 0 12px var(--brand-2);
+}
+
+/* ====== Responsivo ====== */
+@media (max-width: 720px){
+  .brand{ font-size: 0.98rem; }
+  .hero{ height: 150px; }
+  .input-actions{ flex-direction: column; align-items: stretch; }
+  .btn{ justify-content:center; }
 }
